@@ -1,0 +1,12 @@
+#This dataset is a data frame with six columns: Ozone (the ozone measurement), Solar.R (the solar measurement), Wind (the wind measurement), Temp (the temperature in Fahrenheit), and the Month and Day these measurements were taken. Each row represents a specific month and day combination.  
+
+data("airquality")
+View(airquality)
+
+airquality[, "Solar.R"] > 150 & airquality[, "Wind"] > 10
+
+airquality[, "Solar.R"] > 150 | airquality[, "Wind"] > 10
+
+airquality[, "Day"] != 1
+
+!(airquality[, "Solar.R"] > 150 | airquality[, "Wind"] > 10)
