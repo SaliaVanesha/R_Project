@@ -1,0 +1,18 @@
+install.packages("tidyverse") # Installs the tidyverse meta-package (only needed once)
+library(tidyverse) # Loads core tidyverse packages (dplyr, ggplot2, etc.)
+
+data("diamonds") # Loads the built-in `diamonds` dataset from ggplot2
+View(diamonds) # Opens the dataset in a spreadsheet-like tab (RStudio-specific)
+
+head(diamonds) # Displays the first 6 rows of the dataset
+
+str(diamonds) # Shows the structure (variables, data types, sample values)
+
+colnames(diamonds) # Returns the column names of the dataset
+
+mutate(diamonds, carat_2=carat*100) # Creates a new column `carat_2` by scaling `carat` by 100x
+
+diamonds <- diamonds %>% 
+  mutate(carat_2 = carat * 100)
+
+diamonds
