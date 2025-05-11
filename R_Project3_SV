@@ -1,0 +1,10 @@
+installed.packages()
+
+library(tidyverse)
+tidyverse_update()
+
+update.packages()
+
+browseVignettes()
+
+browseVignettes('ggplot2')
