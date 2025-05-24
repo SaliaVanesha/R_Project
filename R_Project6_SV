@@ -1,0 +1,79 @@
+install.packages("tidyverse")
+library(tidyverse)
+
+data(diamonds)
+View(diamonds)
+
+as_tibble(diamonds)
+
+diamonds_tibble <- as_tibble(diamonds)
+diamonds_tibble
+
+data()
+
+data(mtcars)
+mtcars
+
+View(mtcars)
+
+readr_example()
+[1]"challenge.csv"  
+[2]"epa78.txt"  
+[3]"example.log"
+[4]"fwf-sample.txt" 
+[5]"massey-rating.txt" 
+[6]"mtcars.csv"
+[7]"mtcars.csv.bz2" 
+[8]"mtcars.csv.zip"
+
+readr_example()
+"challenge.csv"  
+"epa78.txt"  
+"example.log"
+"fwf-sample.txt" 
+"massey-rating.txt" 
+"mtcars.csv"
+"mtcars.csv.bz2" 
+"mtcars.csv.zip"
+
+read_csv(readr_example("mtcars.csv"))
+
+cols(
+  mpg = col_double(),
+  cyl = col_double(),
+  disp = col_double(),
+  hp = col_double(),
+  drat = col_double(),
+  wt = col_double(),
+  qsec = col_double(),
+  vs = col_double(),
+  am = col_double(),
+  gear = col_double(),
+  carb = col_double()
+)
+
+# A tibble: 32 x 11
+mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb
+<dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
+  1  21       6  160    110  3.9   2.62  16.5     0     1     4     4
+2  21       6  160    110  3.9   2.88  17.0     0     1     4     4
+3  22.8     4  108     93  3.85  2.32  18.6     1     1     4     1
+4  21.4     6  258    110  3.08  3.22  19.4     1     0     3     1
+5  18.7     8  360    175  3.15  3.44  17.0     0     0     3     2
+6  18.1     6  225    105  2.76  3.46  20.2     1     0     3     1
+7  14.3     8  360    245  3.21  3.57  15.8     0     0     3     4
+8  24.4     4  147.    62  3.69  3.19  20       1     0     4     2
+9  22.8     4  141.    95  3.92  3.15  22.9     1     0     4     2
+10  19.2     6  168.   123  3.92  3.44  18.3     1     0     4     4
+# ... with 22 more rows
+
+library(readxl)
+readxl_example()
+
+read_excel()
+read_csv()
+read_excel(readxl_example("type-me.xlsx"))
+
+excel_sheets(readxl_example("type-me.xlsx"))
+
+read_excel(readxl_example("type-me.xlsx"), sheet = "numeric_coercion")
