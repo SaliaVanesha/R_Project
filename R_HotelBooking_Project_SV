@@ -1,0 +1,84 @@
+# Load required packages
+library(tidyverse)
+library(ggplot2)
+
+# 1. Import Data
+bookings <- read_csv("hotel_bookings.csv")
+
+# 2. Initial Exploration
+# View structure
+glimpse(bookings)
+
+# First 6 rows
+head(bookings)
+
+# Summary statistics
+summary(bookings)
+
+# Check dimensions
+dim(bookings)
+
+# Check for missing values
+colSums(is.na(bookings))
+
+# 3. Basic Analysis
+# Hotel type distribution
+bookings %>%
+  count(hotel) %>%
+  ggplot(aes(x = hotel, y = n, fill = hotel)) +
+  geom_col() +
+  labs(title = "Bookings by Hotel Type")
+
+# Average daily rate distribution
+ggplot(bookings, aes(x = adr)) +
+  geom_histogram(fill = "blue", bins = 30) +
+  labs(title = "Distribution of Average Daily Rate (ADR)")
+
+# Cancellation rate
+bookings %>%
+  count(is_canceled) %>%
+  mutate(percentage = n/sum(n)*100) %>%
+  ggplot(aes(x = factor(is_canceled), y = percentage, fill = factor(is_canceled))) +
+  geom_col() +
+  labs(title = "Cancellation Rate", x = "Cancellation Status")
+
+# 4. Advanced Analysis
+# Lead time vs. cancellations
+bookings %>%
+  ggplot(aes(x = factor(is_canceled), y = lead_time)) +
+  geom_boxplot() +
+  labs(title = "Lead Time vs. Cancellation Status", 
+       x = "Cancelled (1) vs. Not Cancelled (0)")
+
+# ADR by hotel type and customer type
+bookings %>%
+  group_by(hotel, customer_type) %>%
+  summarize(avg_adr = mean(adr, na.rm = TRUE)) %>%
+  ggplot(aes(x = customer_type, y = avg_adr, fill = hotel)) +
+  geom_col(position = "dodge") +
+  labs(title = "Average Daily Rate by Hotel Type and Customer Type")
+
+# Monthly bookings trend
+bookings %>%
+  count(arrival_date_year, arrival_date_month) %>%
+  mutate(date = paste(arrival_date_month, arrival_date_year)) %>%
+  ggplot(aes(x = reorder(date, n), y = n)) +
+  geom_col(fill = "darkgreen") +
+  coord_flip() +
+  labs(title = "Monthly Bookings Trend", x = "Month-Year", y = "Number of Bookings")
+
+# 5. Missing Data Handling
+# Identify columns with missing values
+missing_data <- bookings %>%
+  summarise_all(~sum(is.na(.))) %>%
+  pivot_longer(everything(), names_to = "column", values_to = "missing_count") %>%
+  filter(missing_count > 0)
+
+print(missing_data)
+
+# Handle missing children values (example: replace NA with 0)
+bookings_clean <- bookings %>%
+  mutate(children = replace_na(children, 0))
+
+# 6. Save cleaned data
+write_csv(bookings_clean, "hotel_bookings_clean.csv")
