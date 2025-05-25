@@ -1,93 +1,44 @@
-install.packages("here")
-library("here")
+x <- 2
+y <- 5
 
-install.packages("skimr")
-library("skimr")
+x + y
+x - y
+x * y
+x / y
+y %% x
+y %/% x
+y^x
 
-install.packages("janitor")
-library("janitor")
+x < y
+x > y
+x <= 2
+y >= 10
+y == 5
+x != 2
 
-install.packages("dplyr")
-library("dplyr")
+TRUE & TRUE
+TRUE & FALSE
+FALSE & TRUE
+FALSE & FALSE
 
-install.packages("palmerpenguins")
-library("palmerpenguins")
+x <- 10
+x > 3 & x < 12
 
-#1
-skim_without_charts(penguins)
+x <- 20
+x > 3 & x < 12
 
-glimpse(penguins)
+TRUE|TRUE
+TRUE|FALSE
+FALSE|TRUE
+FALSE|FALSE
 
-#2
-# Create custom function
-skim_glimpse <- function(data) {
-  cat("=== Skim Summary ===\n")
-  print(skim_without_charts(data))
-  
-  cat("\n=== Glimpse Summary ===\n")
-  glimpse(data)
-}
+y <- 7
+y < 8 | y > 16
 
-# Usage with palmerpenguins data
-skim_glimpse(penguins)
+y <- 12
+y < 8 | y > 16
 
-#3
-# Define the function with explicit package calls
-skim_glimpse <- function(data) {
-  cat("=== Skim Summary ===\n")
-  print(skimr::skim_without_charts(data))  # Explicit package reference
-  
-  cat("\n=== Glimpse Summary ===\n")
-  dplyr::glimpse(data)                     # Explicit package reference
-}
+!(x < 15)
 
-skim_glimpse(penguins)
-
-# Install packages if missing
-if (!require("skimr")) install.packages("skimr")
-if (!require("dplyr")) install.packages("dplyr")
-
-head(penguins)
-
-penguins %>%
-  select(species)
-
-penguins %>%
-  select(-species)
-
-penguins %>%
-  rename(island_new=island)
-
-rename_with(penguins, toupper)
-
-rename_with(penguins, tolower)
-
-#1
-clean_names(penguins)
-
-#2
-clean_names <- function(data) {
-  # Convert column names to lowercase and replace special characters
-  new_names <- tolower(colnames(data)) |>
-    gsub("[^a-z0-9]", "_", x = _) |>
-    gsub("_+", "_", x = _) |>
-    gsub("^_|_$", "", x = _)
-  
-  # Ensure uniqueness of column names
-  new_names <- make.unique(new_names, sep = "_")
-  
-  # Apply cleaned names to the data frame
-  colnames(data) <- new_names
-  return(data)
-}
-
-# Example usage
-penguins_clean <- clean_names(penguins)
-
-# Verify changes
-colnames(penguins_clean)
-
-#3
-penguins_clean <- clean_names(penguins)
 
 
