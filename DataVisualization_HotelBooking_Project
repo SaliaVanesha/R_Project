@@ -1,0 +1,108 @@
+# Load required packages
+library(tidyverse)
+library(skimr)
+library(lubridate)
+library(scales)
+
+# Import data
+bookings <- read_csv("hotel_bookings.csv")
+
+# Data cleaning
+clean_bookings <- bookings %>%
+  mutate(
+    # Combine date components
+    arrival_date = dmy(paste(arrival_date_day_of_month, 
+                             arrival_date_month, 
+                             arrival_date_year)),
+    # Create guest total
+    total_guests = adults + children + babies,
+    # Convert cancellation to factor
+    is_canceled = factor(is_canceled, levels = c(0,1), labels = c("Not Canceled", "Canceled")),
+    # Create stay duration
+    stay_duration = stays_in_weekend_nights + stays_in_week_nights
+  ) %>%
+  # Remove unnecessary columns
+  select(-reservation_status, -reservation_status_date)
+
+# Overall metrics
+overview <- clean_bookings %>%
+  summarize(
+    total_bookings = n(),
+    cancellation_rate = mean(is_canceled == "Canceled"),
+    avg_lead_time = mean(lead_time),
+    avg_guests = mean(total_guests, na.rm = TRUE)
+  )
+
+# Cancellation analysis
+cancel_analysis <- clean_bookings %>%
+  group_by(hotel, is_canceled) %>%
+  summarize(count = n(), .groups = "drop") %>%
+  mutate(percentage = count / sum(count))
+
+# Seasonal patterns
+monthly_trends <- clean_bookings %>%
+  mutate(arrival_month = month(arrival_date, label = TRUE)) %>%
+  group_by(arrival_month, hotel) %>%
+  summarize(bookings = n(), .groups = "drop")
+
+# Revenue potential
+revenue_potential <- clean_bookings %>%
+  group_by(hotel) %>%
+  summarize(
+    avg_daily_rate = mean(adr, na.rm = TRUE),
+    potential_revenue = sum(adr * stay_duration, na.rm = TRUE)
+  )
+
+ggplot(monthly_trends, aes(x = arrival_month, y = bookings, fill = hotel)) +
+  geom_col(position = "dodge") +
+  labs(title = "Monthly Booking Trends by Hotel Type",
+       x = "Arrival Month",
+       y = "Number of Bookings") +
+  scale_fill_brewer(palette = "Set1") +
+  theme_minimal()
+
+ggplot(cancel_analysis, aes(x = hotel, y = percentage, fill = is_canceled)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = scales::percent(percentage, accuracy = 1)), 
+            position = position_stack(vjust = 0.5)) +
+  labs(title = "Cancellation Rates by Hotel Type",
+       x = "Hotel Type",
+       y = "Percentage") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c("#1f77b4", "#ff7f0e")) +
+  theme_minimal()
+
+ggplot(clean_bookings, aes(x = lead_time, fill = is_canceled)) +
+  geom_density(alpha = 0.6) +
+  facet_wrap(~hotel) +
+  labs(title = "Cancellation Probability by Lead Time",
+       x = "Lead Time (Days)",
+       y = "Density") +
+  scale_fill_manual(values = c("#1f77b4", "#ff7f0e")) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+segment_analysis <- clean_bookings %>%
+  group_by(market_segment, hotel) %>%
+  summarize(bookings = n(), .groups = "drop")
+
+ggplot(segment_analysis, aes(x = reorder(market_segment, -bookings), y = bookings, fill = hotel)) +
+  geom_col() +
+  labs(title = "Booking Distribution by Market Segment",
+       x = "Market Segment",
+       y = "Number of Bookings") +
+  coord_flip() +
+  scale_fill_brewer(palette = "Set2") +
+  theme_minimal()
+
+ggplot(revenue_potential, aes(x = hotel, y = potential_revenue, fill = hotel)) +
+  geom_col() +
+  labs(title = "Revenue Potential by Hotel Type",
+       x = "Hotel Type",
+       y = "Potential Revenue (€)") +
+  scale_y_continuous(labels = scales::comma) +
+  scale_fill_manual(values = c("#4e79a7", "#f28e2b")) +
+  theme_minimal()
+
+# Save cleaned data for further analysis
+write_csv(clean_bookings, "cleaned_hotel_bookings.csv")
