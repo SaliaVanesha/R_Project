@@ -36,3 +36,4 @@ guest_calculations <- bookings_df %>%
 summary_stats <- bookings_df %>%
   summarize(
     number_canceled = sum(is_canceled),
+    average_lead_time = mean(lead_time, na.rm = TRUE)
