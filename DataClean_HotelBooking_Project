@@ -1,0 +1,99 @@
+# ---
+# title: "Lesson 3: Cleaning Solutions"
+# output: html_document
+# ---
+
+## Step 1: Load packages
+
+# Start by installing the required packages.
+# If you have already installed and loaded `tidyverse`, `skimr`,
+# and `janitor` in this session, feel free to skip these lines.
+ install.packages("tidyverse")
+ install.packages("skimr")
+ install.packages("janitor")
+
+# Once a package is installed, you can load it
+library(tidyverse)
+library(skimr)
+library(janitor)
+
+## Step 2: Import data
+# The data in this example is originally from the article Hotel Booking Demand Datasets
+# You will use the read_csv() function to import data from a .csv
+# in the project folder called "hotel_bookings.csv" and save it
+# as a data frame called `bookings_df`:
+#
+# NOTE: Make sure "hotel_bookings.csv" is in your R working directory
+# or provide the full path to the file.
+bookings_df <- read_csv("hotel_bookings.csv")
+
+## Step 3: Getting to know your data
+
+# Preview your data, including the head() function
+head(bookings_df)
+
+# Summarize or preview the data with the str() and glimpse() functions
+str(bookings_df)
+glimpse(bookings_df)
+
+# Use colnames() to check the names of the columns
+colnames(bookings_df)
+
+# Use the skim_without_charts() function from the skimr package
+skim_without_charts(bookings_df)
+
+## Step 4: Cleaning your data
+
+# Create a new data frame with just hotel, is_canceled, lead_time,
+# calling it `trimmed_df`.
+trimmed_df <- bookings_df %>%
+  select(hotel, is_canceled, lead_time)
+
+# Display the first few rows of the new data frame
+head(trimmed_df)
+
+# Rename the variable 'hotel' to be named 'hotel_type'.
+# Note: The original Rmd shows this operation without assigning it back.
+# If you want to save the change, you'd do:
+# trimmed_df <- trimmed_df %>%
+#   rename(hotel_type = hotel)
+# Or, if you wanted to select and rename in one go from the original df:
+# trimmed_df_renamed <- bookings_df %>%
+#   select(hotel, is_canceled, lead_time) %>%
+#   rename(hotel_type = hotel)
+
+# The code as it appears in the Rmd (prints to console, doesn't modify trimmed_df):
+trimmed_df %>%
+  select(hotel, is_canceled, lead_time) %>% # This select is on trimmed_df which already has these columns
+  rename(hotel_type = hotel)
+
+# A more direct way to rename the column in trimmed_df and save it:
+trimmed_df <- trimmed_df %>%
+  rename(hotel_type = hotel)
+head(trimmed_df) # To see the renamed column
+
+# Combine the arrival month and year into one column using the unite() function:
+example_df <- bookings_df %>%
+  select(arrival_date_year, arrival_date_month) %>%
+  unite(arrival_month_year, c("arrival_date_month", "arrival_date_year"), sep = " ")
+
+# Display the first few rows of this example_df
+head(example_df)
+
+## Step 5: Another way of doing things
+
+# Use the`mutate()` function to make changes to your columns.
+# Create a new column that summed up all the adults, children, and babies.
+example_df <- bookings_df %>% # This overwrites the previous example_df
+  mutate(guests = adults + children + babies)
+
+head(example_df)
+
+# Calculate the total number of canceled bookings and the average lead time.
+# Make a column called 'number_canceled' and 'average_lead_time'.
+# Use the `summarize()` function.
+example_df <- bookings_df %>% # This again overwrites example_df, now with summary stats
+  summarize(number_canceled = sum(is_canceled),
+            average_lead_time = mean(lead_time))
+
+head(example_df)
