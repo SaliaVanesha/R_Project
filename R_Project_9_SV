@@ -1,0 +1,37 @@
+install.packages("palmerpenguins")
+install.packages("tidyverse")
+
+library(tidyverse)
+library(palmerpenguins)
+
+penguins %>% arrange(bill_length_mm)
+
+penguins %>% arrange(-bill_length_mm)
+
+penguins2 <- penguins %>% arrange (-bill_length_mm)
+view(penguins2)
+
+#1
+penguins %>% 
+  group_by(island) %>% 
+  drop_na() %>%
+  summarize(mean_bill_length_mm = mean(bill_length_mm))
+
+#2
+penguins %>%
+  group_by(island) %>%
+  drop_na() %>% # Correct pipe
+  summarize(mean_bill_length = mean(bill_length_mm, na.rm = TRUE)) # Example of next step
+
+penguins %>%
+  group_by(island) %>%
+  drop_na() %>%
+  summarize(max_bill_length_mm = max(bill_length_mm))
+
+penguins %>%
+  group_by(species, island) %>%
+  drop_na() %>%
+  summarize(max_bl = max(bill_length_mm), mean_bl = mean(bill_length_mm))
+
+penguins %>%
+  filter(species == "Adelie")
