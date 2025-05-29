@@ -1,0 +1,38 @@
+install.packages("tidyverse")
+install.packages("skimr")
+install.packages("janitor")
+
+# Load required packages
+library(tidyverse)
+library(skimr)
+library(janitor)
+
+# Import hotel bookings data
+bookings_df <- read_csv("hotel_bookings.csv")
+
+# Explore data structure
+head(bookings_df)
+str(bookings_df)
+glimpse(bookings_df)
+colnames(bookings_df)
+skim_without_charts(bookings_df)
+
+# Create trimmed dataset with key columns
+trimmed_df <- bookings_df %>% 
+  select(hotel, is_canceled, lead_time) %>% 
+  rename(hotel_type = hotel)
+
+# Combine date columns
+combined_dates <- bookings_df %>%
+  unite(arrival_month_year, 
+        c("arrival_date_month", "arrival_date_year"), 
+        sep = " ")
+
+# Calculate total guests per booking
+guest_calculations <- bookings_df %>%
+  mutate(guests = adults + children + babies)
+
+# Create summary statistics
+summary_stats <- bookings_df %>%
+  summarize(
+    number_canceled = sum(is_canceled),
