@@ -1,0 +1,63 @@
+# ------------------------------------------------------------------
+# R Code for "Create a Plot in ggplot2" Activity
+# ------------------------------------------------------------------
+
+# Step 1: Install necessary packages
+# You only need to run these lines ONCE. If you have already installed them,
+# you can skip this step or leave the lines commented out.
+ install.packages("ggplot2")
+ install.packages("palmerpenguins")
+
+
+# Step 2: Load the packages into your R session
+# You need to run this every time you start a new R session.
+library(ggplot2)
+library(palmerpenguins)
+
+
+# Step 3: Examine the penguins data frame
+# The data() function is not strictly necessary but is good practice to explicitly load the data.
+data(penguins) 
+
+# Use View() to open the dataset in a new tab in RStudio (like a spreadsheet).
+# Note the capital "V".
+View(penguins)
+
+# You can also use head() to see the first few rows directly in the console.
+head(penguins)
+
+
+# ------------------------------------------------------------------
+# Step 4: Create the scatterplot
+# ------------------------------------------------------------------
+
+# This code creates a plot showing the relationship between flipper length and body mass.
+ggplot(data = penguins) + 
+  geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g))
+
+# --- Code Breakdown ---
+#
+# ggplot(data = penguins): This initializes the plot and specifies the dataset we are using.
+#
+# + : The plus sign is used to add new layers to the plot.
+#
+# geom_point(): This is the geometric object (geom) layer. It tells ggplot to represent
+#               the data as points, creating a scatterplot.
+#
+# mapping = aes(...): This describes the aesthetic mappings—how variables from the data
+#                     are connected to visual properties of the plot.
+#
+# x = flipper_length_mm: Maps the 'flipper_length_mm' column to the x-axis.
+# y = body_mass_g:       Maps the 'body_mass_g' column to the y-axis.
+
+
+# ------------------------------------------------------------------
+# Pro-Tip: Alternative syntax
+# ------------------------------------------------------------------
+
+# You can also place the mapping argument inside the main ggplot() function.
+# This is useful if all subsequent geom layers will use the same aesthetics.
+# The code below produces the exact same plot as the one above.
+
+# ggplot(data = penguins, mapping = aes(x = flipper_length_mm, y = body_mass_g)) + 
+#   geom_point()
