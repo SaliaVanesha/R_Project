@@ -1,0 +1,21 @@
+install.packages("ggplot2")
+install.packages("tidyverse")
+install.packages("palmerpenguins")
+
+library(tidyverse)
+library(ggplot2)
+library(palmerpenguins)
+
+data(penguins) 
+View(penguins)
+head(penguins)
+
+ggplot(data = penguins) + geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g))
+
+ggplot(data = penguins, mapping = aes(x = flipper_length_mm, y = body_mass_g)) + geom_point()
+
+penguins_clean <- penguins %>%
+  drop_na(flipper_length_mm, body_mass_g)
+
+ggplot(data = penguins_clean, mapping = aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point()
