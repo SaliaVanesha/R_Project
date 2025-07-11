@@ -1,0 +1,14 @@
+# Run this code to see the lead time in the first row
+onlineta_city_hotels_v2 <- hotel_bookings %>%
+  filter(hotel == "City Hotel") %>%
+  filter(market_segment == "Online TA")
+
+# Option 1: View the entire filtered data frame
+View(onlineta_city_hotels_v2)
+
+# Option 2: Get just the first row's lead time
+first_lead_time <- head(onlineta_city_hotels_v2$lead_time, 1)
+print(paste("The lead time in the first row is:", first_lead_time))
+
+# Option 3: Get the first few lead times to see the pattern
+head(onlineta_city_hotels_v2$lead_time, 10)
