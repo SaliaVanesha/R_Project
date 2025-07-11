@@ -1,0 +1,86 @@
+# Lesson 3: Aesthetics Solutions - R Script Version
+
+# Load required packages
+if (!require(ggplot2)) {
+  install.packages('ggplot2')
+  library(ggplot2)
+}
+
+# Step 1: Import your data
+hotel_bookings <- read.csv("hotel_bookings.csv")
+
+# Step 2: Refresh Your Memory
+cat("\nPreview of the data:\n")
+head(hotel_bookings)
+
+cat("\nColumn names:\n")
+colnames(hotel_bookings)
+
+# Step 4: Making a Bar Chart
+cat("\nCreating basic bar chart of distribution channels...\n")
+dist_chart <- ggplot(data = hotel_bookings) +
+  geom_bar(mapping = aes(x = distribution_channel)) +
+  labs(title = "Bookings by Distribution Channel",
+       x = "Distribution Channel",
+       y = "Number of Bookings")
+print(dist_chart)
+
+# Step 5: Diving deeper into bar charts
+cat("\nCreating chart with deposit type breakdown...\n")
+deposit_chart <- ggplot(data = hotel_bookings) +
+  geom_bar(mapping = aes(x = distribution_channel, fill = deposit_type)) +
+  labs(title = "Bookings by Distribution Channel and Deposit Type",
+       x = "Distribution Channel",
+       y = "Number of Bookings",
+       fill = "Deposit Type")
+print(deposit_chart)
+
+cat("\nCreating chart with market segment breakdown...\n")
+market_chart <- ggplot(data = hotel_bookings) +
+  geom_bar(mapping = aes(x = distribution_channel, fill = market_segment)) +
+  labs(title = "Bookings by Distribution Channel and Market Segment",
+       x = "Distribution Channel",
+       y = "Number of Bookings",
+       fill = "Market Segment")
+print(market_chart)
+
+# Step 6: Facets galore
+cat("\nCreating faceted charts by deposit type...\n")
+facet_deposit <- ggplot(data = hotel_bookings) +
+  geom_bar(mapping = aes(x = distribution_channel)) +
+  facet_wrap(~deposit_type) +
+  labs(title = "Bookings by Distribution Channel - Faceted by Deposit Type",
+       x = "Distribution Channel",
+       y = "Number of Bookings")
+print(facet_deposit)
+
+cat("\nCreating faceted charts by market segment...\n")
+facet_market <- ggplot(data = hotel_bookings) +
+  geom_bar(mapping = aes(x = distribution_channel)) +
+  facet_wrap(~market_segment) +
+  labs(title = "Bookings by Distribution Channel - Faceted by Market Segment",
+       x = "Distribution Channel",
+       y = "Number of Bookings")
+print(facet_market)
+
+cat("\nCreating grid faceted chart by deposit type...\n")
+grid_deposit <- ggplot(data = hotel_bookings) +
+  geom_bar(mapping = aes(x = distribution_channel)) +
+  facet_grid(~deposit_type) +
+  labs(title = "Bookings by Distribution Channel - Grid by Deposit Type",
+       x = "Distribution Channel",
+       y = "Number of Bookings")
+print(grid_deposit)
+
+cat("\nCreating combined facet chart...\n")
+combined_facets <- ggplot(data = hotel_bookings) +
+  geom_bar(mapping = aes(x = distribution_channel)) +
+  facet_wrap(~deposit_type ~ market_segment) +
+  labs(title = "Bookings by Distribution Channel - Faceted by Deposit & Market",
+       x = "Distribution Channel",
+       y = "Number of Bookings")
+print(combined_facets)
+
+# Print answer to practice quiz
+cat("\nPractice Quiz Answer:\n")
+cat("The TA/TO distribution type has the most number of bookings.\n")
