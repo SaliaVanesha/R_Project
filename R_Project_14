@@ -1,0 +1,18 @@
+# Load required packages
+library(ggplot2)
+library(palmerpenguins)  # Corrected package name (was "palmerpenquins")
+
+# First plot: Smooth line with points overlay
+ggplot(data = penguins) +  # Corrected dataset name (was "penquins")
+    geom_smooth(mapping = aes(x = flipper_length_mm, y = body_mass_g)) +
+    geom_point(mapping = aes(x = flipper_length_mm, y = body_mass_g))
+
+# Second plot: Smooth line with linetype aesthetic
+ggplot(data = penguins) +  # Corrected dataset name
+    geom_smooth(mapping = aes(x = flipper_length_mm, 
+                             y = body_mass_g,
+                             linetype = species))  # Added missing aesthetic mapping
+
+# Third plot: Bar chart with diamonds dataset
+ggplot(data = diamonds) +
+    geom_bar(mapping = aes(x = cut, fill = clarity))  # Corrected "maping" to "mapping"
