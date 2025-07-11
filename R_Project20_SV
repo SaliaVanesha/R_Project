@@ -1,0 +1,85 @@
+# --- Lesson 4: Annotations and Saving ---
+
+# This script demonstrates how to annotate and save plots using the ggplot2 package
+# with the 'hotel_bookings.csv' dataset.
+
+# --- Step 1: Import your data ---
+# Load the dataset from the specified CSV file into a data frame.
+hotel_bookings <- read.csv("hotel_bookings.csv")
+
+
+# --- Step 2: Refresh Your Memory ---
+# Get a quick overview of the data structure and column names.
+
+# Preview the first few rows of the data frame.
+head(hotel_bookings)
+
+# List all column names in the data frame.
+colnames(hotel_bookings)
+
+
+# --- Step 3: Install and load the 'ggplot2' package ---
+# Note: You only need to run install.packages() once.
+# If ggplot2 is already installed, you can comment out the first line.
+# install.packages('ggplot2')
+
+# Load the ggplot2 library to make its functions available for use.
+library(ggplot2)
+
+
+# --- Step 4: Annotating your chart ---
+# This section walks through adding titles, captions, and labels to a plot.
+
+# First, create the initial faceted bar chart.
+ggplot(data = hotel_bookings) +
+  geom_bar(mapping = aes(x = market_segment)) +
+  facet_wrap(~hotel)
+
+# Add a main title to the plot using the labs() function.
+ggplot(data = hotel_bookings) +
+  geom_bar(mapping = aes(x = market_segment)) +
+  facet_wrap(~hotel) +
+  labs(title = "Comparison of market segments by hotel type for hotel bookings")
+
+# To add a dynamic date range, first find the earliest and latest years in the data.
+mindate <- min(hotel_bookings$arrival_date_year)
+maxdate <- max(hotel_bookings$arrival_date_year)
+
+# Add a subtitle to display the data's time period.
+# The paste0() function combines text and variables without spaces.
+ggplot(data = hotel_bookings) +
+  geom_bar(mapping = aes(x = market_segment)) +
+  facet_wrap(~hotel) +
+  labs(title = "Comparison of market segments by hotel type for hotel bookings",
+       subtitle = paste0("Data from: ", mindate, " to ", maxdate))
+
+# Change the subtitle to a caption, which is placed in the bottom-right corner.
+ggplot(data = hotel_bookings) +
+  geom_bar(mapping = aes(x = market_segment)) +
+  facet_wrap(~hotel) +
+  labs(title = "Comparison of market segments by hotel type for hotel bookings",
+       caption = paste0("Data from: ", mindate, " to ", maxdate))
+
+# Finally, clean up the x and y axis labels for better clarity.
+# This is the final version of the plot before saving.
+ggplot(data = hotel_bookings) +
+  geom_bar(mapping = aes(x = market_segment)) +
+  facet_wrap(~hotel) +
+  labs(title = "Comparison of market segments by hotel type for hotel bookings",
+       caption = paste0("Data from: ", mindate, " to ", maxdate),
+       x = "Market Segment",
+       y = "Number of Bookings")
+
+
+# --- Step 5: Saving your chart ---
+# The ggsave() function saves the most recently displayed ggplot.
+
+# Save the plot with default settings (e.g., default size, last plot).
+# The file will be named 'hotel_booking_chart.png' and saved in your working directory.
+ggsave('hotel_booking_chart.png')
+
+# Save the plot with custom dimensions to make it wider for a presentation.
+# Here, we specify a width of 16 inches and a height of 8 inches.
+ggsave('hotel_booking_chart.png',
+       width = 16,
+       height = 8)
