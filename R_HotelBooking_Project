@@ -1,0 +1,63 @@
+# Load required packages
+library(ggplot2)
+library(dplyr)
+library(readr)
+
+# Download and read the dataset
+url <- "https://d3c33hcgiwev3.cloudfront.net/GL0bk8O2Sja9G5PDtko2uQ_31e445d7ca64417eb45aeaa08ec90bf1_hotel_bookings.csv?Expires=1752364800&Signature=EHYdhUy~KJxAbaCEi-QKc4uLQO0wbTb3rutiVnYuHlAtRc9Fg3nJI3aN58EO1CVKCzPNTuH-tl8DbQLXgTQRRd1gpR0F3l~~lRwdXLBgvcdCedUgoz1oAPPc12a0Xlag8TGKghZioBXzfhMqNvJle7cjDZwLija8-I3pkR~0ZFM_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A"
+hotel_bookings <- read_csv(url)
+
+# Basic data exploration
+head(hotel_bookings)
+str(hotel_bookings)
+summary(hotel_bookings)
+
+# Data cleaning (example)
+hotel_bookings <- hotel_bookings %>%
+  mutate(
+    arrival_date = as.Date(paste(arrival_date_year, arrival_date_month, arrival_date_day_of_month, sep="-"), 
+                          format="%Y-%B-%d"),
+    children = replace_na(children, 0),
+    babies = replace_na(babies, 0)
+  )
+
+# Visualization 1: Booking lead time distribution
+ggplot(hotel_bookings, aes(x = lead_time)) +
+  geom_histogram(fill = "steelblue", bins = 30) +
+  labs(title = "Distribution of Booking Lead Time",
+       x = "Lead Time (days)",
+       y = "Number of Bookings") +
+  theme_minimal()
+
+# Visualization 2: Hotel type comparison
+ggplot(hotel_bookings, aes(x = hotel, fill = deposit_type)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Booking Distribution by Hotel Type and Deposit",
+       x = "Hotel Type",
+       y = "Count") +
+  scale_fill_brewer(palette = "Set2") +
+  theme_minimal()
+
+# Visualization 3: Relationship between lead time and cancellations
+ggplot(hotel_bookings, aes(x = lead_time, y = is_canceled, color = hotel)) +
+  geom_jitter(alpha = 0.3, height = 0.05) +
+  labs(title = "Cancellations by Lead Time and Hotel Type",
+       x = "Lead Time (days)",
+       y = "Cancellation Status") +
+  scale_color_manual(values = c("City Hotel" = "navy", "Resort Hotel" = "goldenrod")) +
+  theme_minimal()
+
+# Advanced analysis: Monthly booking trends
+hotel_bookings %>%
+  count(arrival_date_month, hotel) %>%
+  mutate(arrival_date_month = factor(arrival_date_month, 
+                                   levels = month.name)) %>%
+  ggplot(aes(x = arrival_date_month, y = n, group = hotel, color = hotel)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  labs(title = "Monthly Booking Trends by Hotel Type",
+       x = "Month",
+       y = "Number of Bookings") +
+  scale_color_manual(values = c("City Hotel" = "navy", "Resort Hotel" = "goldenrod")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
