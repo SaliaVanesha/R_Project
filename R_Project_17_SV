@@ -1,0 +1,75 @@
+# Lesson 3: Filters and Facets Solutions - R Script Version
+
+# Load required packages
+if (!require(ggplot2)) {
+  install.packages('ggplot2')
+  library(ggplot2)
+}
+
+if (!require(tidyverse)) {
+  install.packages('tidyverse')
+  library(tidyverse)
+}
+
+# Step 1: Import your data
+hotel_bookings <- read.csv("hotel_bookings.csv")
+
+# Step 2: Refresh Your Memory
+cat("\nPreview of the data:\n")
+head(hotel_bookings)
+
+cat("\nColumn names:\n")
+colnames(hotel_bookings)
+
+# Step 4: Making many different charts
+cat("\nCreating scatter plot of lead time vs children...\n")
+scatter_plot <- ggplot(data = hotel_bookings) +
+  geom_point(mapping = aes(x = lead_time, y = children)) +
+  labs(title = "Lead Time vs Number of Children",
+       x = "Lead Time (days)",
+       y = "Number of Children")
+print(scatter_plot)
+
+cat("\nCreating bar chart of hotels by market segment...\n")
+hotel_market_chart <- ggplot(data = hotel_bookings) +
+  geom_bar(mapping = aes(x = hotel, fill = market_segment)) +
+  labs(title = "Hotel Types by Market Segment",
+       x = "Hotel Type",
+       y = "Count",
+       fill = "Market Segment")
+print(hotel_market_chart)
+
+cat("\nCreating faceted chart by market segment...\n")
+faceted_hotel_chart <- ggplot(data = hotel_bookings) +
+  geom_bar(mapping = aes(x = hotel)) +
+  facet_wrap(~market_segment) +
+  labs(title = "Hotel Types Faceted by Market Segment",
+       x = "Hotel Type",
+       y = "Count")
+print(faceted_hotel_chart)
+
+# Step 5: Filtering
+cat("\nFiltering to City Hotels with Online TA market segment...\n")
+onlineta_city_hotels <- filter(hotel_bookings, 
+                             (hotel == "City Hotel" & 
+                              market_segment == "Online TA"))
+
+cat("\nAlternative filtering using pipe operator...\n")
+onlineta_city_hotels_v2 <- hotel_bookings %>%
+  filter(hotel == "City Hotel") %>%
+  filter(market_segment == "Online TA")
+
+# Step 6: Use your new dataframe
+cat("\nCreating scatter plot for filtered data...\n")
+filtered_scatter <- ggplot(data = onlineta_city_hotels) +
+  geom_point(mapping = aes(x = lead_time, y = children)) +
+  labs(title = "Lead Time vs Children (City Hotels - Online TA)",
+       x = "Lead Time (days)",
+       y = "Number of Children")
+print(filtered_scatter)
+
+# Optional: View the filtered dataframes
+cat("\nYou can view the filtered dataframes with:\n")
+cat("View(onlineta_city_hotels)\n")
+cat("or\n")
+cat("View(onlineta_city_hotels_v2)\n")
