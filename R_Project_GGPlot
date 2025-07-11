@@ -1,0 +1,20 @@
+# Step 1: Import your data
+hotel_bookings <- read.csv("hotel_bookings.csv")
+
+# Step 2: Look at a sample of your data
+head(hotel_bookings)
+
+# Get column names
+colnames(hotel_bookings)
+
+# Step 3: Install and load the 'ggplot2' package
+install.packages('ggplot2')
+library(ggplot2)
+
+# Step 4: Create first plot (lead_time vs children)
+ggplot(data = hotel_bookings) +
+  geom_point(mapping = aes(x = lead_time, y = children))
+
+# Step 5: Create second plot (stays_in_weekend_nights vs children)
+ggplot(data = hotel_bookings) +
+  geom_point(mapping = aes(x = stays_in_weekend_nights, y = children))
