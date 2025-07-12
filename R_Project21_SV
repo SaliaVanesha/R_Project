@@ -1,0 +1,19 @@
+library(ggplot2)
+library(palmerpenguins)  # Assuming this is the dataset being used
+
+# Basic scatter plot of penguin data
+ggplot(data = penguins, 
+       aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(aes(color = species)) +
+  facet_wrap(~sex) +
+  labs(title = "Penguin Size by Species",
+       x = "Flipper Length (mm)",
+       y = "Body Mass (g)")
+
+# Alternative version with different aesthetics
+ggplot(data = penguins, 
+       aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(aes(color = species)) +
+  labs(title = "Penguin Measurements",
+       x = "Flipper Length (mm)",
+       y = "Body Mass (g)")
