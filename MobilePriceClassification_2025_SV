@@ -1,0 +1,105 @@
+# 1. SETUP: LOAD LIBRARIES
+# install.packages("tidyverse")
+# install.packages("corrplot")
+# install.packages("scales")
+
+library(tidyverse)
+library(corrplot)
+library(scales)
+
+# 2. PREPARE: LOAD AND INSPECT DATA
+# Download the dataset from: https://www.kaggle.com/datasets/iabhishekofficial/mobile-price-classification
+# Place 'train.csv' in your working directory
+df <- read_csv("train.csv")
+
+# Initial inspection
+glimpse(df)
+summary(df)
+
+# 3. PROCESS: CLEAN AND TRANSFORM DATA
+
+# Check for missing values (should be 0)
+sum(is.na(df))
+
+# Check for duplicates (should be 0)
+sum(duplicated(df))
+
+# Feature Engineering: Create descriptive labels for price_range
+df_processed <- df %>%
+  mutate(
+    price_range_label = factor(price_range,
+                               levels = c(0, 1, 2, 3),
+                               labels = c("Budget", "Mid-Range", "High-End", "Premium")),
+    four_g_label = factor(four_g,
+                          levels = c(0, 1),
+                          labels = c("No", "Yes"))
+  )
+
+# 4. ANALYZE & 5. SHARE: CREATE VISUALIZATIONS
+
+# Set a consistent theme for plots
+theme_set(theme_minimal(base_size = 14))
+
+# -- Visualization 1: Correlation Heatmap --
+# Select only numeric columns for correlation matrix
+numeric_cols <- df %>% select_if(is.numeric)
+corr_matrix <- cor(numeric_cols)
+
+# Plot the heatmap
+corrplot(corr_matrix, 
+         method = "color", 
+         type = "upper", 
+         order = "hclust",
+         tl.col = "black", 
+         tl.srt = 45,
+         addCoef.col = "black",
+         number.cex = 0.6,
+         title = "Feature Correlation with Price Range",
+         mar = c(0,0,1,0))
+
+
+# -- Visualization 2: RAM vs. Price Range --
+ggplot(df_processed, aes(x = price_range_label, y = ram, fill = price_range_label)) +
+  geom_boxplot() +
+  labs(
+    title = "RAM: The Primary Driver of Smartphone Price",
+    subtitle = "RAM distribution across different price categories",
+    x = "Price Range",
+    y = "RAM (in Megabytes)"
+  ) +
+  theme(legend.position = "none")
+
+
+# -- Visualization 3: The Feature "Sweet Spot" --
+# Battery Power
+p_battery <- ggplot(df_processed, aes(x = price_range_label, y = battery_power, fill = price_range_label)) +
+  geom_violin() +
+  labs(title = "Battery Power", x = NULL, y = "Battery (mAh)") +
+  theme(legend.position = "none")
+
+# Internal Memory
+p_memory <- ggplot(df_processed, aes(x = price_range_label, y = int_memory, fill = price_range_label)) +
+  geom_violin() +
+  labs(title = "Internal Memory", x = "Price Range", y = "Storage (GB)") +
+  theme(legend.position = "none")
+
+# Combine plots (requires patchwork library)
+# install.packages("patchwork")
+library(patchwork)
+p_battery / p_memory + plot_annotation(title = "Feature Sweet Spots Across Price Tiers")
+
+
+# -- Visualization 4: The 4G/5G Divide --
+df_processed %>%
+  group_by(price_range_label, four_g_label) %>%
+  summarise(count = n(), .groups = 'drop') %>%
+  ggplot(aes(x = price_range_label, y = count, fill = four_g_label)) +
+  geom_bar(stat = "identity", position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(
+    title = "4G/5G Capability by Price Tier",
+    subtitle = "High-speed connectivity is standard in premium phones",
+    x = "Price Range",
+    y = "Percentage of Phones",
+    fill = "Has 4G/5G"
+  )
